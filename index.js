@@ -206,37 +206,39 @@ Notifications._onRemoteFetch = function(notificationData: Object) {
 	}
 };
 
-Notifications._onNotification = function(data, isFromBackground = null) {
-	if ( isFromBackground === null ) {
+Notifications._onNotification = function (data, isFromBackground = null) {
+	var notifData = data.getData() || {};
+	if (isFromBackground === null) {
 		isFromBackground = (
 			data.foreground === false ||
+			notifData.foreground === false ||
 			AppState.currentState === 'background'
 		);
 	}
 
-	if ( this.onNotification !== false ) {
-		if ( Platform.OS === 'ios' ) {
+	if (this.onNotification !== false) {
+		if (Platform.OS === 'ios') {
 			this.onNotification({
-				foreground: ! isFromBackground,
+				foreground: !isFromBackground,
 				userInteraction: isFromBackground,
 				message: data.getMessage(),
-				data: data.getData(),
+				data: notifData,
 				badge: data.getBadgeCount(),
 				alert: data.getAlert(),
 				sound: data.getSound(),
-  			finish: (res) => data.finish(res)
+				finish: (res) => data.finish(res)
 			});
 		} else {
 			var notificationData = {
-				foreground: ! isFromBackground,
-  			finish: () => {},
+				foreground: !isFromBackground,
+				finish: () => { },
 				...data
 			};
 
-			if ( typeof notificationData.data === 'string' ) {
+			if (typeof notificationData.data === 'string') {
 				try {
 					notificationData.data = JSON.parse(notificationData.data);
-				} catch(e) {
+				} catch (e) {
 					/* void */
 				}
 			}
