@@ -207,7 +207,7 @@ Notifications._onRemoteFetch = function(notificationData: Object) {
 };
 
 Notifications._onNotification = function (data, isFromBackground = null) {
-	var notifData = data.getData() || {};
+	var notifData = data.getData ? data.getData() : {};
 	if (isFromBackground === null) {
 		isFromBackground = (
 			data.foreground === false ||
