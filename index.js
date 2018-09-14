@@ -92,10 +92,10 @@ Notifications.configure = function(options: Object) {
 			( options.popInitialNotification === undefined || options.popInitialNotification === true ) ) {
 		this.popInitialNotification(function(firstNotification) {
 			if ( firstNotification !== null ) {
+				this.hasPoppedInitialNotification = true;
 				this._onNotification(firstNotification, true);
 			}
 		}.bind(this));
-		this.hasPoppedInitialNotification = true;
 	}
 
 	if ( options.requestPermissions !== false ) {
