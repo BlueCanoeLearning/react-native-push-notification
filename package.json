@@ -24,12 +24,7 @@
     "url": "git+ssh://git@github.com:zo0r/react-native-push-notification.git"
   },
   "peerDependencies": {
-    "react-native": ">=0.33"
-  },
-  "rnpm": {
-    "android": {
-      "packageInstance": "new ReactNativePushNotificationPackage()"
-    }
+    "react-native": ">=0.61.5"
   },
   "author": "zo0r <http://zo0r.me>",
   "license": "MIT"
