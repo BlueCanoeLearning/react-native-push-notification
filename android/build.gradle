@@ -1,58 +1,50 @@
 buildscript {
     repositories {
+        google()
         jcenter()
     }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.3'
-    }
-}
 
-allprojects {
-    repositories {
-        jcenter()
+    dependencies {
+        classpath "com.android.tools.build:gradle:3.4.2"
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven'
 
-def DEFAULT_COMPILE_SDK_VERSION = 27
-def DEFAULT_BUILD_TOOLS_VERSION = "27.0.3"
-def DEFAULT_TARGET_SDK_VERSION = 27
-def DEFAULT_SUPPORT_LIB_VERSION = "27.1.1"
-def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION = "+"
-def DEFAULT_FIREBASE_MESSAGING_VERSION = "+"
+def safeExtGet(prop, fallback) {
+    rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
+}
 
 android {
-    compileSdkVersion project.hasProperty('compileSdkVersion') ? project.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
-    buildToolsVersion project.hasProperty('buildToolsVersion') ? project.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
+    compileSdkVersion safeExtGet('compileSdkVersion', 28)
+    buildToolsVersion safeExtGet('buildToolsVersion', "28.0.3")
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion project.hasProperty('targetSdkVersion') ? project.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
-        versionCode 1
-        versionName "1.0"
-        ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
+        minSdkVersion safeExtGet('minSdkVersion', 16)
+        targetSdkVersion safeExtGet('targetSdkVersion', 28)
+
+        versionCode 2
+        versionName "1.1"
     }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+    lintOptions {
+       warning 'InvalidPackage', 'MissingPermission'
     }
 }
 
-dependencies {
-    def supportLibVersion = project.hasProperty('supportLibVersion') ? project.supportLibVersion : DEFAULT_SUPPORT_LIB_VERSION
-    def googlePlayServicesVersion = project.hasProperty('googlePlayServicesVersion') ? project.googlePlayServicesVersion : DEFAULT_GOOGLE_PLAY_SERVICES_VERSION
-    def firebaseVersion = project.hasProperty('firebaseVersion') ? project.firebaseVersion : DEFAULT_FIREBASE_MESSAGING_VERSION
+repositories {
+    google()
+    maven {
+        // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+        url "$rootDir/../node_modules/react-native/android"
+    }
+    mavenCentral()
+    jcenter()
+}
 
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile 'com.facebook.react:react-native:+'
-    compile "com.google.android.gms:play-services-gcm:$googlePlayServicesVersion"
-    compile 'me.leolin:ShortcutBadger:1.1.8@aar'
-    compile "com.google.firebase:firebase-messaging:$firebaseVersion"
+dependencies {
+    implementation "com.facebook.react:react-native:${safeExtGet('reactNativeVersion', '+')}"
+    implementation "com.google.android.gms:play-services-gcm:${safeExtGet('googlePlayServicesVersion', '16.1.0')}"
+    implementation "com.google.firebase:firebase-messaging:${safeExtGet('firebaseVersion', '+')}"
+    implementation 'me.leolin:ShortcutBadger:1.1.8@aar'
 }
