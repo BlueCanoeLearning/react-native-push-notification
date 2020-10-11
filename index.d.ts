@@ -84,7 +84,7 @@ declare module "react-native-push-notification" {
     export function localNotification(options: NotificationOptions): void;
     export function localNotificationSchedule(options: LocalNotificationOptions): void;
     export function unregister(): void;
-    export function checkPermissions(): Promise<boolean>;
+    export function checkPermissions(callback: (value?: { alert?: boolean}) => void): void;
 
     export const handler: any;
 }
